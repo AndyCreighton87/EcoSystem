@@ -11,6 +11,10 @@ public class Grid : MonoBehaviour {
 
     private Tile[,] tiles;
 
+    public int Width => width;
+    public int Height => height;
+    public Tile[,] Tiles => tiles;
+
     private void Awake() {
         if (Instance != null) {
             Destroy(gameObject);
@@ -46,8 +50,8 @@ public class Grid : MonoBehaviour {
         return null;
     }
 
-    public List<Tile> GetNeighbours(Tile _node, int _rangeX = 1, int _rangeY = 1) {
-        List<Tile> neighbours = new List<Tile>();
+    public HashSet<Tile> GetNeighbours(Tile _node, int _rangeX = 1, int _rangeY = 1) {
+        HashSet<Tile> neighbours = new HashSet<Tile>();
 
         for (int x = -_rangeX; x <= _rangeX; x++) {
             for (int y = -_rangeY; y <= _rangeY; y++) {

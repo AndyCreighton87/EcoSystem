@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -205,8 +206,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: 0.38871944, y: -0.01658779, z: 0.007000497, w: 0.92118025}
+  m_LocalPosition: {x: 60.38425, y: 61.226692, z: -20.480522}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -256,6 +257,21 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e76677fd9be83954b9512d13cfd9f646, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 10
+  lookSpeed: 2
+  scrollSpeed: 10
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,6 +403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 763213744}
   - component: {fileID: 763213743}
+  - component: {fileID: 763213745}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -406,8 +423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6de983d70ff49749b9ecf05f5fb8065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
+  width: 100
+  height: 100
   cellSize: 1
 --- !u!4 &763213744
 Transform:
@@ -424,6 +441,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &763213745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763213742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a2b8c8a4b47be428a0406a45230a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileVisuals:
+  - {fileID: -2429215957116418554, guid: c13bd03196c804041a7e544f47cad4b7, type: 3}
+  - {fileID: 6160364769017461528, guid: 79fa457ba8110874ea61ac9743ed8151, type: 3}
+  - {fileID: 6160364769017461528, guid: 92e483a58cbfddf4aa4aaa56825f8fc6, type: 3}
+  - {fileID: 6160364769017461528, guid: fded8a6b567b7304ca60d2c5b610b6cb, type: 3}
+  - {fileID: 6160364769017461528, guid: f03d8509d5cf511458ae2434c7d4cecd, type: 3}
+  - {fileID: 6160364769017461528, guid: 7c83d33284d48b54797526808c7520c4, type: 3}
+  noiseScale: 0.1
+  waterThreshold: 0.3
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
