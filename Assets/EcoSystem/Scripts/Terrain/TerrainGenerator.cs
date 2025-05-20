@@ -120,11 +120,18 @@ public class TerrainGenerator : MonoBehaviour
             for (int y = 0; y < grid.Height; y++) {
                 Tile tile = grid.Tiles[x, y];
                 TileVisual prefab = tileVisuals.FirstOrDefault(t => t.TileType == tile.TileType);
+
                 if (prefab == null) {
                     Debug.LogError($"Tile at {x},{y}. Visual not found.");
                     return;
                 }
-                Instantiate(prefab, tile.Position, Quaternion.identity, transform);
+
+                Vector3 pos = tile.Position;
+                if (tile.TileType == TileType.Water || tile.TileType == TileType.DeepWater) {
+                    pos.y -= 0.1f;
+                }
+
+                Instantiate(prefab, pos, Quaternion.identity, transform);
             }
         }
     }

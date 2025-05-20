@@ -423,9 +423,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6de983d70ff49749b9ecf05f5fb8065, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 100
-  height: 100
-  cellSize: 1
+  width: 200
+  height: 200
+  cellSize: 0.5
 --- !u!4 &763213744
 Transform:
   m_ObjectHideFlags: 0
@@ -461,7 +461,7 @@ MonoBehaviour:
   - {fileID: 6160364769017461528, guid: f03d8509d5cf511458ae2434c7d4cecd, type: 3}
   - {fileID: 6160364769017461528, guid: 7c83d33284d48b54797526808c7520c4, type: 3}
   noiseScale: 0.1
-  waterThreshold: 0.3
+  waterThreshold: 0.2
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
