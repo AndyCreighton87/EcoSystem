@@ -9,13 +9,6 @@ public class TerrainGenerator : MonoBehaviour
     [SerializeField] private float noiseScale = 0.1f;
     [SerializeField] private float waterThreshold = 0.4f;
 
-    private List<Vector2Int> Cardinal = new List<Vector2Int>() {
-        Vector2Int.up,
-        Vector2Int.down,
-        Vector2Int.left,
-        Vector2Int.right
-    };
-
     private void Start() {
         GenerateTerrain();
     }
@@ -41,56 +34,51 @@ public class TerrainGenerator : MonoBehaviour
     }
 
     private void DoTileVariation(Grid grid) {
-        // TODO: Some issues here:
-        // The Sand Grass isn't spawning.
-        // Deep water looks really good with a neighbour range of 1
-        // Thick grass does not
-
-
         DoSand();
-        DoSandGrass();
-        DoDeepWaterAndThickGrass();
-
+        DoDeepWater();
 
         void DoSand() {
-            for (int x = 0; x < grid.Width; x++) {
-                for (int y = 0; y < grid.Height; y++) {
-                    if (grid.Tiles[x, y].TileType == TileType.Water) {
-                        foreach (var dir in Cardinal) {
-                            int nx = x + dir.x;
-                            int ny = y + dir.y;
-                            if (CheckInBounds(nx, ny, grid.Width, grid.Height) && grid.Tiles[nx, ny].TileType == TileType.Grass) {
-                                grid.Tiles[nx, ny].TileType = TileType.Sand;
-                            }
-                        }
+            List<Tile> sandTilesToUpdate = new List<Tile>();
+            List<Tile> sandGrassTilesToUpdate = new List<Tile>();
+
+            foreach (Tile tile in grid.Tiles) {
+                if (tile.TileType != TileType.Grass) {
+                    continue;
+                }
+
+                foreach (Tile neighbor in grid.GetNeighbours(tile)) {
+                    if (neighbor.TileType == TileType.Water) {
+                        sandTilesToUpdate.Add(tile);
+                        break;
                     }
                 }
             }
-        }
 
-        void DoSandGrass() {
-            for (int x = 0; x < grid.Width; x++) {
-                for (int y = 0; y < grid.Height; y++) {
-                    if (grid.Tiles[x, y].TileType == TileType.Grass) {
-                        foreach (var dir in Cardinal) {
-                            int nx = x + dir.x;
-                            int ny = y + dir.y;
-                            if (CheckInBounds(nx, ny, grid.Width, grid.Height) && grid.Tiles[nx, ny].TileType == TileType.Sand) {
-                                grid.Tiles[nx, ny ].TileType = TileType.SandGrass;
-                            }
-                        }
+            foreach (Tile sandTile in sandTilesToUpdate) {
+                foreach (Tile neighbor in grid.GetNeighbours(sandTile)) {
+                    if (neighbor.TileType == TileType.Grass && !sandTilesToUpdate.Contains(neighbor)) {
+                        sandGrassTilesToUpdate.Add(neighbor);
                     }
                 }
             }
+
+            foreach (Tile tile in sandTilesToUpdate) {
+                tile.TileType = TileType.Sand;
+            }
+
+            foreach (Tile tile in sandGrassTilesToUpdate) {
+                tile.TileType = TileType.SandGrass;
+            }
+
         }
 
-        void DoDeepWaterAndThickGrass() {
+        void DoDeepWater() {
             List<Tile> tilesToUpdate = new List<Tile>();
 
             for (int x = 1; x < grid.Width - 1; x++) {
                 for (int y = 1; y < grid.Height - 1; y++) {
                     Tile tile = grid.Tiles[x, y];
-                    if (tile.TileType != TileType.Water && tile.TileType != TileType.Grass) {
+                    if (tile.TileType != TileType.Water) {
                         continue;
                     }
 
@@ -101,18 +89,14 @@ public class TerrainGenerator : MonoBehaviour
             }
 
             foreach (var tile in tilesToUpdate) {
-                tile.TileType = tile.TileType == TileType.Water ? TileType.DeepWater : TileType.ThickGrass;
+                tile.TileType = TileType.DeepWater;
             }
         }
 
         bool AllNeighboursMatch(Tile tile) {
-            var neighbours = grid.GetNeighbours(tile, 3);
+            var neighbours = grid.GetNeighbours(tile);
             return neighbours.All(t => t.TileType == tile.TileType);
         }
-    }
-
-    private bool CheckInBounds(int x, int y, int width, int height) {
-        return x >= 0 && y >= 0 && x < width && y < height;
     }
 
     private void SpawnTiles(Grid grid) {

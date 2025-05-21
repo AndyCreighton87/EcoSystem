@@ -460,8 +460,8 @@ MonoBehaviour:
   - {fileID: 6160364769017461528, guid: fded8a6b567b7304ca60d2c5b610b6cb, type: 3}
   - {fileID: 6160364769017461528, guid: f03d8509d5cf511458ae2434c7d4cecd, type: 3}
   - {fileID: 6160364769017461528, guid: 7c83d33284d48b54797526808c7520c4, type: 3}
-  noiseScale: 0.1
-  waterThreshold: 0.2
+  noiseScale: 0.04
+  waterThreshold: 0.35
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
