@@ -9,10 +9,24 @@ public class Tile
 
     public TileType TileType;
 
+    private GameObject tileObj = null;
+    public GameObject TileObj => tileObj;
+
+    public bool isEmpty => tileObj == null;
+
     public Tile(Vector3 _Position, int _GridX, int _GridY) {
         Position = _Position;
         GridX = _GridX;
         GridY = _GridY;
+    }
+
+    public void SetTileObject(GameObject _tileObj) {
+        if (!isEmpty) {
+            Debug.LogError($"Attempted to place {_tileObj.name} in tile {GridX}, {GridY}. However, {tileObj.name} already exists there. Returning.");
+            return;
+        }
+
+        tileObj = _tileObj;
     }
 }
 

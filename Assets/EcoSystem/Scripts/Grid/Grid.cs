@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using System.Linq;
 
 public class Grid : MonoBehaviour {
     public static Grid Instance { get; private set; }
@@ -73,6 +73,19 @@ public class Grid : MonoBehaviour {
         return neighbours;
     }
 
+    public List<Tile> GetAllEmptyTiles() {
+        List<Tile> emptyTiles = new List<Tile>();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (tiles[x, y].isEmpty) {
+                    emptyTiles.Add(tiles[x, y]);
+                }
+            }
+        }
+
+        return emptyTiles;
+    }
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;

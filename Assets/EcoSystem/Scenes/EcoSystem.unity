@@ -460,9 +460,13 @@ MonoBehaviour:
   - {fileID: 6160364769017461528, guid: fded8a6b567b7304ca60d2c5b610b6cb, type: 3}
   - {fileID: 6160364769017461528, guid: f03d8509d5cf511458ae2434c7d4cecd, type: 3}
   - {fileID: 6160364769017461528, guid: 7c83d33284d48b54797526808c7520c4, type: 3}
+  treePrefab: {fileID: 50329697467550269, guid: 38ae08c39ce603f49a4dbf0a51386f3f, type: 3}
+  bushPrefab: {fileID: 4591400762624625034, guid: b0a9689a62a61904ea5dbfc83abaa29f, type: 3}
   noiseScale: 0.08
-  waterThreshold: 0.3
-  nextTileDelay: 0.001
+  waterThreshold: 0.32
+  treeSpawnChance: 0.05
+  bushSpawnChance: 0.05
+  nextTileDelay: 0.0005
   tileDropDuration: 0.5
   tileStartingOffset: 0.75
 --- !u!1 &832575517
