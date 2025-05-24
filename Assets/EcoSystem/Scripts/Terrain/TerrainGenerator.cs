@@ -1,16 +1,26 @@
-using NUnit.Framework;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    [Header("Terrain Generation")]
     [SerializeField] private List<TileVisual> tileVisuals;
-    [SerializeField] private float noiseScale = 0.1f;
-    [SerializeField] private float waterThreshold = 0.4f;
+    [SerializeField, Range(0, 1.0f)] private float noiseScale = 0.1f;
+    [SerializeField, Range(0, 1.0f)] private float waterThreshold = 0.4f;
+
+    [Header("Animation")]
+    [SerializeField] private float nextTileDelay = 0.1f;
+    [SerializeField] private float tileDropDuration = 0.1f;
+    [SerializeField] private float tileStartingOffset = 1.0f;
+
+    private List<GameObject> spawnedTiles = new List<GameObject>();
 
     private void Start() {
         GenerateTerrain();
+        StartAnimation();
     }
 
     private void GenerateTerrain() {
@@ -21,16 +31,80 @@ public class TerrainGenerator : MonoBehaviour
             return;
         }
 
-        for (int x = 0; x < grid.Width; x++) {
-            for (int y = 0; y < grid.Height; y++) {
-                float noise = Mathf.PerlinNoise(x * noiseScale, y * noiseScale);
+        int maxTries = 10;
+        int attempt = 0;
+        int minConnectedWaterTiles = 15;
 
-                grid.Tiles[x, y].TileType = noise < waterThreshold ? TileType.Water : TileType.Grass;
+        do {
+            float noiseOffsetX = Random.Range(0f, 10f);
+            float noiseOffsetY = Random.Range(0f, 10f);
+
+            int waterCount = 0;
+
+            for (int x = 0; x < grid.Width; x++) {
+                for (int y = 0; y < grid.Height; y++) {
+                    float noise = Mathf.PerlinNoise((x * noiseScale) + noiseOffsetX, (y * noiseScale) + noiseOffsetY);
+                    var tileType = noise < waterThreshold ? TileType.Water : TileType.Grass;
+                    grid.Tiles[x, y].TileType = tileType;
+
+                    if (tileType == TileType.Water) waterCount++;
+                }
             }
-        }
+
+            attempt++;
+
+        } while (CountConnectedWaterTiles(grid) < minConnectedWaterTiles && attempt < maxTries);
 
         DoTileVariation(grid);
         SpawnTiles(grid);
+    }
+
+    private int CountConnectedWaterTiles(Grid grid) {
+        int width = grid.Width;
+        int height = grid.Height;
+        bool[,] visited = new bool[width, height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (grid.Tiles[x, y].TileType == TileType.Water) {
+                    return FloodFill(grid, x, y, visited);
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    private int FloodFill(Grid grid, int startX, int startY, bool[,] visited) {
+        int count = 0;
+        int width = grid.Width;
+        int height = grid.Height;
+
+        Queue<(int x, int y)> queue = new Queue<(int x, int y)>();
+        queue.Enqueue((startX, startY));
+        visited[startX, startY] = true;
+
+        int[] dx = { 1, -1, 0, 0 };
+        int[] dy = { 0, 0, 1, -1 };
+
+        while (queue.Count > 0) {
+            var (x, y) = queue.Dequeue();
+            count++;
+
+            for (int i = 0; i < 4; i++) {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                    if (!visited[nx, ny] && grid.Tiles[nx, ny].TileType == TileType.Water) {
+                        visited[nx, ny] = true;
+                        queue.Enqueue((nx, ny));
+                    }
+                }
+            }
+        }
+
+        return count;
     }
 
     private void DoTileVariation(Grid grid) {
@@ -39,8 +113,6 @@ public class TerrainGenerator : MonoBehaviour
 
         void DoSand() {
             List<Tile> sandTilesToUpdate = new List<Tile>();
-            List<Tile> sandGrassTilesToUpdate = new List<Tile>();
-
             foreach (Tile tile in grid.Tiles) {
                 if (tile.TileType != TileType.Grass) {
                     continue;
@@ -54,20 +126,8 @@ public class TerrainGenerator : MonoBehaviour
                 }
             }
 
-            foreach (Tile sandTile in sandTilesToUpdate) {
-                foreach (Tile neighbor in grid.GetNeighbours(sandTile)) {
-                    if (neighbor.TileType == TileType.Grass && !sandTilesToUpdate.Contains(neighbor)) {
-                        sandGrassTilesToUpdate.Add(neighbor);
-                    }
-                }
-            }
-
             foreach (Tile tile in sandTilesToUpdate) {
                 tile.TileType = TileType.Sand;
-            }
-
-            foreach (Tile tile in sandGrassTilesToUpdate) {
-                tile.TileType = TileType.SandGrass;
             }
 
         }
@@ -115,10 +175,33 @@ public class TerrainGenerator : MonoBehaviour
                     pos.y -= 0.1f;
                 }
 
-                Instantiate(prefab, pos, Quaternion.identity, transform);
+                TileVisual visual = Instantiate(prefab, pos, Quaternion.identity, transform);
+                visual.gameObject.SetActive(false);
+                spawnedTiles.Add(visual.gameObject);
             }
         }
     }
 
+    private void StartAnimation() {
+        StartCoroutine(StartTileAnimation());
+    }
 
+    private IEnumerator StartTileAnimation() {
+        foreach (var tile in spawnedTiles.Shuffled()) {
+            DoTileAnimation(tile);
+            yield return new WaitForSeconds(nextTileDelay);
+        }
+    }
+
+    private void DoTileAnimation(GameObject tile) {
+        tile.SetActive(true);
+
+        Transform tileTrans = tile.transform;
+        Vector3 tilePos = tileTrans.position;
+
+        Vector3 newPos = new Vector3(tilePos.x, tilePos.y + tileStartingOffset, tilePos.z);
+        tileTrans.position = newPos;
+
+        tile.transform.DOMoveY(tilePos.y, tileDropDuration).SetEase(Ease.OutBounce);
+    }
 }
