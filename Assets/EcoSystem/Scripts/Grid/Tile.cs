@@ -2,16 +2,23 @@ using UnityEngine;
 
 public class Tile
 {
+    // Grid
     public Vector3 Position;
-
     public int GridX;
     public int GridY;
 
+    // Pathfinding
+    public int gCost;
+    public int hCost;
+    public int fCost => gCost + hCost;
+    public bool walkable = true;
+    public Tile parent;
+
+    // Tile
     public TileType TileType;
 
     private GameObject tileObj = null;
     public GameObject TileObj => tileObj;
-
     public bool isEmpty => tileObj == null;
 
     public Tile(Vector3 _Position, int _GridX, int _GridY) {

@@ -87,13 +87,30 @@ public class Grid : MonoBehaviour {
         return emptyTiles;
     }
 
-    private void OnDrawGizmos() {
-        Gizmos.color = Color.yellow;
+    public List<Tile> path;
 
-        for (int x = 0; x < width; x++) {
-            for (int z = 0; z < height; z++) {
-                Vector3 position = new Vector3(x * cellSize, 0, z * cellSize);
-                Gizmos.DrawWireCube(position, new Vector3(cellSize, 0.1f, cellSize));
+    private void OnDrawGizmos() {
+
+
+        bool drawGird = tiles != null && tiles.Length > 0;
+
+        if (drawGird) {
+            foreach (Tile tile in tiles) {
+                Gizmos.color = tile.walkable ? Color.white : Color.red;
+                if (path != null && path.Contains(tile)) {
+                    Gizmos.color = Color.cyan;
+                }
+
+                Gizmos.DrawCube(tile.Position, Vector3.one * (cellSize - 0.1f));
+            }
+        } else {
+            Gizmos.color = Color.yellow;
+
+            for (int x = 0; x < width; x++) {
+                for (int z = 0; z < height; z++) {
+                    Vector3 position = new Vector3(x * cellSize, 0, z * cellSize);
+                    Gizmos.DrawWireCube(position, new Vector3(cellSize, 0.1f, cellSize));
+                }
             }
         }
     }
