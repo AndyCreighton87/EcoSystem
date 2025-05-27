@@ -6,4 +6,4 @@ A simple ecosystem simulation, heavily inspired by Sebastian Lague's Coding Adve
 
 I’ve added procedural generation using a grid-based system to create the terrain. The system lets me generate different types of terrain, like grass, sand, water, and deep water, giving the ecosystem a variety of landscapes. I’ve set it up so that the terrain is placed randomly or based on specific rules, which means the environment looks different every time the simulation runs. I’ve also used this same system to spawn trees and bushes, which will be used in pathfinding & as a food source. It’s been fun experimenting with procedural generation, as it makes the environment feel more dynamic and unpredictable.
 
-![hippo] (https://drive.google.com/file/d/1huQ4OoD_slI5uH643MvZVeH00wvtCj5_/view?usp=sharing)
+![hippo](https://drive.google.com/file/d/1huQ4OoD_slI5uH643MvZVeH00wvtCj5_/view?usp=sharing)
