@@ -13,6 +13,7 @@ public class Grid : MonoBehaviour {
 
     public int Width => width;
     public int Height => height;
+    public int MaxSize => width * height;
     public Tile[,] Tiles => tiles;
 
     private void Awake() {

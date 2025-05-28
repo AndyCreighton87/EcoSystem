@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tile
+public class Tile : IHeapItem<Tile>
 {
     // Grid
     public Vector3 Position;
@@ -13,6 +13,17 @@ public class Tile
     public int fCost => gCost + hCost;
     public bool walkable = true;
     public Tile parent;
+
+    // Heap
+    private int heapIndex;
+    public int HeapIndex {
+        get {
+            return heapIndex;
+        }
+        set {
+            heapIndex = value;
+        }
+    }
 
     // Tile
     public TileType TileType;
@@ -34,6 +45,16 @@ public class Tile
         }
 
         tileObj = _tileObj;
+    }
+
+    public int CompareTo(Tile other) {
+        int compare = fCost.CompareTo(other.fCost);
+
+        if (compare == 0) {
+            compare = hCost.CompareTo(other.hCost);
+        }
+
+        return -compare;
     }
 }
 
