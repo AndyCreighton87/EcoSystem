@@ -13,11 +13,16 @@ public class Ageing : MonoBehaviour, IAnimalComponent {
 
         maxAge = genome.MaxAge;
         age = genome.StartingAge;
+
+        TimeManager.Instance.OnYearElapsed += OnYearElapsed;
     }
 
-    public void Update() {
+    private void OnYearElapsed() {
+        age++;
 
+        if (age > maxAge) {
+            TimeManager.Instance.OnYearElapsed -= OnYearElapsed;
+            events.DeathRequested();
+        }
     }
 }
-
-// TODO: Need to implement how time will pass before we can do age

@@ -39,9 +39,7 @@ public class TimeManager : MonoBehaviour {
             totalYearElapsed += 1;
             OnYearElapsed?.Invoke();
         }
-
-        Debug.Log($"TotalYearsElapsed: {totalYearElapsed}");
     }
 
-    public float GetYearFraction() => accumulatedTime / secondsPerYear;
+    public int GetYearsElapsed() => Mathf.FloorToInt(totalYearElapsed);
 }
